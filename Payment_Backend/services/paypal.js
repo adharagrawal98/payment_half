@@ -54,11 +54,11 @@ exports.createOrder = async () => {
             ],
 
             application_context: {
-                return_url: process.env.BASE_URL + '/complete-order',
-                cancel_url: process.env.BASE_URL + '/cancel-order',
+                return_url: "localhost:8080/",
+                cancel_url: "localhost:8080/",
                 shipping_preference: 'NO_SHIPPING',
                 user_action: 'PAY_NOW',
-                brand_name: 'manfra.io'
+                brand_name: 'Charity'
             }
         })
     })
