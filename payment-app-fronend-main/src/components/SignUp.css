@@ -1,0 +1,31 @@
+/* SignUp.css */
+
+.signup-container {
+    background-image: url('../assets/Singup-image.jpg'); /* Ensure the path is correct */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; /* Cover to ensure it takes full width/height */
+    height: 100vh; /* Full height of the viewport */
+}
+
+.signup-content {
+    margin-top: -50px; /* Adjust this value to move content up */
+}
+
+@media (max-width: 1024px) {
+    .signup-container {
+        background-size: 80% auto; /* 80% width on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .signup-container {
+        background-size: 70% auto; /* 70% width on smaller screens */
+    }
+}
+
+@media (max-width: 640px) {
+    .signup-container {
+        background-size: 100% auto; /* Full width on extra small screens */
+    }
+}
