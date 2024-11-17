@@ -1,82 +1,87 @@
-const axios = require('axios')
+const paypal = require('@paypal/checkout-server-sdk');
 
-async function generateAccessToken() {
-    const response = await axios({
-        url: process.env.PAYPAL_BASE_URL + '/v1/oauth2/token',
-        method: 'post',
-        data: 'grant_type=client_credentials',
-        auth: {
-            username: process.env.PAYPAL_CLIENT_ID,
-            password: process.env.PAYPAL_SECRET
-        }
-    })
+// Set up PayPal environment (Sandbox or Live)
+const environment = new paypal.core.SandboxEnvironment(
+    clientId = process.env.PAYPAL_CLIENT_ID || 'AS5b882r4vsM-Hfg0WnZ_8fuvsbDax_qTvUPCQF7X6Rcbuh8VkWN00PyWqfajo-QX0p-kXcJKexBMrlx',
+    clientSecret = process.env.PAYPAL_SECRET || 'EHdyXjlfCnikEQTdKZz15WxcPPI6k7q_nuPaZLtIt0tFyob7TcGgeCAaCNFkVwnxITcaDmHYv9KQtf6B'
+);
 
-    return response.data.access_token
-}
+console.log("env", environment)
+const client = new paypal.core.PayPalHttpClient(environment);
 
-exports.createOrder = async () => {
-    const accessToken = await generateAccessToken()
-
-    const response = await axios({
-        url: process.env.PAYPAL_BASE_URL + '/v2/checkout/orders',
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + accessToken
-        },
-        data: JSON.stringify({
-            intent: 'CAPTURE',
+// Create an order
+exports.createOrder = async (amount, currency = 'USD', referenceId = null) => {
+    try {
+        // Build the order request
+        const request = new paypal.orders.OrdersCreateRequest();
+        request.prefer('return=representation');
+        request.requestBody({
+            intent: 'AUTHORIZE',
             purchase_units: [
                 {
-                    items: [
-                        {
-                            name: 'Node.js Complete Course',
-                            description: 'Node.js Complete Course with Express and MongoDB',
-                            quantity: 1,
-                            unit_amount: {
-                                currency_code: 'USD',
-                                value: '100.00'
-                            }
-                        }
-                    ],
-
+                    reference_id: referenceId || 'default-reference-id', // Optional
                     amount: {
-                        currency_code: 'USD',
-                        value: '100.00',
-                        breakdown: {
-                            item_total: {
-                                currency_code: 'USD',
-                                value: '100.00'
-                            }
-                        }
-                    }
-                }
+                        currency_code: currency,
+                        value: amount,
+                    },
+                },
             ],
-
             application_context: {
-                return_url: "localhost:8080/",
-                cancel_url: "localhost:8080/",
-                shipping_preference: 'NO_SHIPPING',
                 user_action: 'PAY_NOW',
-                brand_name: 'Charity'
-            }
-        })
-    })
+                return_url: 'http://localhost:3000/payment-success', // Replace with your return URL
+                cancel_url: 'http://localhost:3000', // Replace with your cancel URL
+            },
+        });
 
-    return response.data.links.find(link => link.rel === 'approve').href
-}
+        // Execute the order creation request
+        const response = await client.execute(request);
 
-exports.capturePayment = async (orderId) => {
-    const accessToken = await generateAccessToken()
-
-    const response = await axios({
-        url: process.env.PAYPAL_BASE_URL + `/v2/checkout/orders/${orderId}/capture`,
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + accessToken
+        // Extract the approval link for redirecting the user
+        const approvalLink = response.result.links.find(link => link.rel === 'approve');
+        if (!approvalLink) {
+            throw new Error('No approval link found in PayPal response');
         }
-    })
 
-    return response.data
-}
+        return {
+            orderId: response.result.id,
+            approvalLink: approvalLink.href,
+        };
+    } catch (error) {
+        console.error("Error creating PayPal order:", error.message);
+        throw new Error("Failed to create PayPal order");
+    }
+};
+
+// Capture payment (if needed)
+exports.capturePayment = async (orderId) => {
+    try {
+        const request = new paypal.orders.OrdersCaptureRequest(orderId);
+        request.requestBody({});
+
+        // Execute the capture request
+        const response = await client.execute(request);
+        return response.result;
+    } catch (error) {
+        console.error("Error capturing PayPal payment:", error.message);
+        throw new Error("Failed to capture PayPal payment");
+    }
+};
+
+// Authorize payment (if needed)
+exports.authorizePayment = async (orderId) => {
+    try {
+        const request = new paypal.orders.OrdersAuthorizeRequest(orderId);
+        request.requestBody({});
+
+        // Execute the authorization request
+        const response = await client.execute(request);
+        const authorization = response.result.purchase_units[0].payments.authorizations[0];
+        return {
+            authorizationId: authorization.id,
+            status: authorization.status,
+        };
+    } catch (error) {
+        console.error("Error authorizing PayPal payment:", error.message);
+        throw new Error("Failed to authorize PayPal payment");
+    }
+};

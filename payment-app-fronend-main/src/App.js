@@ -105,6 +105,7 @@ const App = () => {
         <Route path="/donor-map" element={<DonorMap />} />
         <Route path="/shelter/:id" element={<CharityPaymentPage />} />
         <Route path="/payment-confirmation" element={<PaymentConfirmationPage />} />
+        <Route path="payment-success" element={<PaymentSuccess />} />
       </Routes>
     </div>
   );

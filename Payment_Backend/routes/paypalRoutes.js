@@ -8,4 +8,6 @@ router.post('/create-order', paypalController.createOrder)
 // Route to capture payment
 router.post('/capture-payment/:orderId', paypalController.capturePayment)
 
+router.post('/authorize-payment/:orderId', paypalController.authorizePayment)
+
 module.exports = router

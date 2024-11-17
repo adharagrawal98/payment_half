@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '../firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { QRCodeCanvas } from 'qrcode.react';  // Import QRCodeCanvas
+import PayPalButton from './PayPalButton';
 
 const CharityPaymentPage = () => {
     const { id } = useParams();
@@ -102,16 +103,7 @@ const CharityPaymentPage = () => {
                 </div>
 
                 <div className="mt-8">
-                    {showPayPal ? (
-                        <div id="paypal-button-container"></div>
-                    ) : (
-                        <button
-                            className="w-full py-3 px-6 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300"
-                            onClick={() => setShowPayPal(true)}
-                        >
-                            Proceed to Payment
-                        </button>
-                    )}
+                    <PayPalButton amount="100" charityId="uaegrfiuaer"/>
 
                     <button
                         className="w-full py-3 mt-4 px-6 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-300"
