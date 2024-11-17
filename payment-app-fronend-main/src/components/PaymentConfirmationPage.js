@@ -51,7 +51,11 @@ const PaymentConfirmationPage = () => {
 
     // Generate the QR code image URL with authorizationID, charityID, and registrationNumber
     const generateQrCodeData = (orderID, charityID, registrationNumber) => {
-        const qrContent = `localhost:3000?orderID=${orderID}&charityID=${charityID}&registrationNumber=${registrationNumber}`
+        const qrContent = JSON.stringify({
+            orderID: orderID,
+            charityID: charityID,
+            registrationNumber: registrationNumber
+        });
 
         QRCode.toDataURL(qrContent, { errorCorrectionLevel: 'H' }, (err, url) => {
             if (err) {
