@@ -29,7 +29,6 @@ const PaymentConfirmationPage = () => {
                     const charityData = await getDoc(charityDoc);
 
                     if (charityData.exists()) {
-                        localStorage.setItem("charityID", charityDoc.id);
                         setCharity(charityData.data());
                     } else {
                         console.error("Charity not found!");

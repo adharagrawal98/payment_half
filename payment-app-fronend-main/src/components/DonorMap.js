@@ -42,6 +42,7 @@ const DonorMap = () => {
                 const shelterSnapshot = await getDocs(shelterCollection);
                 const shelterData = shelterSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setShelters(shelterData);
+                localStorage.setItem("charityID", shelterData.id);
             } catch (error) {
                 console.error("Error fetching shelters:", error);
             }
