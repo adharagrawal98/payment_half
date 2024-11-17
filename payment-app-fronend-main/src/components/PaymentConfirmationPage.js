@@ -8,17 +8,16 @@ const PaymentConfirmationPage = () => {
     const location = useLocation();
     const printRef = useRef();
     const [charity, setCharity] = useState(null);
-    const [authorizationID, setAuthorizationID] = useState(null);
     const [orderID, setOrderID] = useState(null);
     const [charityID, setCharityID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [qrCodeData, setQrCodeData] = useState(null);
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const charityIDParam = queryParams.get('charityID');
-        const authID = queryParams.get('authorizationID');
-        const orderID = queryParams.get('orderID');
+
+        const charityIDParam = localStorage.getItem("charityID");
+        const orderId = localStorage.getItem("paypalOrderId");
+
 
         setAuthorizationID(authID);
         setOrderID(orderID);

@@ -14,6 +14,7 @@ import DonorMap from './components/DonorMap';
 import CharityPaymentPage from './components/CharityPaymentPage'
 import PaymentConfirmationPage from './components/PaymentConfirmationPage';
 import VerifyPage from './components/VerifyPage';
+import PaymentSuccess from './components/PaymentSuccess';
 
 const App = () => {
   const [user, setUser] = useState(null);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { nanoid } from 'nanoid';
 const PayPalButton = ({ amount, charityId }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -11,7 +11,7 @@ const PayPalButton = ({ amount, charityId }) => {
         try {
             setLoading(true);
             setError(null);
-            
+
 
             console.log("amount", amount);
             console.log("charityId", charityId);
@@ -30,6 +30,7 @@ const PayPalButton = ({ amount, charityId }) => {
 
             // Store the orderId in local storage (optional)
             localStorage.setItem("paypalOrderId", orderId);
+            localStorage.setItem("charityID", nanoid(10));
 
             // Redirect user to PayPal to approve the payment
             window.location.href = approvalLink;

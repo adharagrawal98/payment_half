@@ -103,7 +103,7 @@ const CharityPaymentPage = () => {
                 </div>
 
                 <div className="mt-8">
-                    <PayPalButton amount="100" charityId="uaegrfiuaer"/>
+                    <PayPalButton amount={shelter.ratePerDay} charityId="uaegrfiuaer" />
 
                     <button
                         className="w-full py-3 mt-4 px-6 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-300"
