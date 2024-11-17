@@ -15,21 +15,21 @@ const PaymentConfirmationPage = () => {
 
     useEffect(() => {
 
-        var charityIDParam = localStorage.getItem("charityID");
-        var orderId = localStorage.getItem("paypalOrderId");
+        const charityIDParam = localStorage.getItem("charityID");
+        const orderId = localStorage.getItem("paypalOrderId");
 
-        console.log("cahrityID", charityIDParam);
+        console.log("charityID", charityIDParam);
         console.log("orderId", orderId);
 
-        setOrderID(orderID);
+        setOrderID(orderId);
         setCharityID(charityIDParam);
 
 
         if (charityIDParam) {
             const fetchCharity = async () => {
                 try {
-                    var charityDoc = doc(db, 'charityDetails', charityIDParam);
-                    var charityData = await getDoc(charityDoc);
+                    const charityDoc = doc(db, 'charityDetails', charityIDParam);
+                    const charityData = await getDoc(charityDoc);
 
                     if (charityData.exists()) {
                         setCharity(charityData.data());
