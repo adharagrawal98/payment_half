@@ -18,8 +18,6 @@ const PaymentConfirmationPage = () => {
         const charityIDParam = localStorage.getItem("charityID");
         const orderId = localStorage.getItem("paypalOrderId");
 
-
-        setAuthorizationID(authID);
         setOrderID(orderID);
         setCharityID(charityIDParam);
 
@@ -31,6 +29,7 @@ const PaymentConfirmationPage = () => {
                     const charityData = await getDoc(charityDoc);
 
                     if (charityData.exists()) {
+                        localStorage.setItem("charityID", charityDoc.id);
                         setCharity(charityData.data());
                     } else {
                         console.error("Charity not found!");
@@ -49,9 +48,8 @@ const PaymentConfirmationPage = () => {
     }, [location]);
 
     // Generate the QR code image URL with authorizationID, charityID, and registrationNumber
-    const generateQrCodeData = (authID, orderID, charityID, registrationNumber) => {
+    const generateQrCodeData = (orderID, charityID, registrationNumber) => {
         const qrContent = JSON.stringify({
-            authorizationID: authID,
             orderID: orderID,
             charityID: charityID,
             registrationNumber: registrationNumber
@@ -68,10 +66,10 @@ const PaymentConfirmationPage = () => {
 
     useEffect(() => {
         // Generate QR code when authorizationID, charityID, and registrationNumber are available
-        if (authorizationID && orderID && charityID && charity?.registrationNumber) {
-            generateQrCodeData(authorizationID, orderID, charityID, charity.registrationNumber);
+        if (orderID && charityID && charity?.registrationNumber) {
+            generateQrCodeData(orderID, charityID, charity.registrationNumber);
         }
-    }, [authorizationID, orderID, charityID, charity]);
+    }, [orderID, charityID, charity]);
 
     const handlePrint = () => {
         const printContents = printRef.current.innerHTML;
@@ -136,7 +134,7 @@ const PaymentConfirmationPage = () => {
 
                 {/* QR Code Section */}
                 <div className="flex items-center justify-center w-full mb-6">
-                    {authorizationID && qrCodeData ? (
+                    {qrCodeData ? (
                         <img
                             src={qrCodeData}
                             alt="QR Code"

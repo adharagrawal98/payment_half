@@ -30,7 +30,6 @@ const PayPalButton = ({ amount, charityId }) => {
 
             // Store the orderId in local storage (optional)
             localStorage.setItem("paypalOrderId", orderId);
-            localStorage.setItem("charityID", nanoid(10));
 
             // Redirect user to PayPal to approve the payment
             window.location.href = approvalLink;
