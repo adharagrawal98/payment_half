@@ -185,18 +185,23 @@ const ShelterDashboard = ({ user }) => {
                     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                         <h3 className="text-xl font-semibold mb-4">Scanned Data</h3>
                         <ScannedDataTable data={scannedData} />
-                        <button onClick={handleVerify} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                            Verify
-                        </button>
-                        <button
-                            onClick={() => {
-                                setScannedData(null); // Clear scanned data
-                                closeScanner(); // Close scanner
-                            }}
-                            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-                        >
-                            Close
-                        </button>
+                        <div className="flex space-x-4 mt-4"> {/* Added flex container and space between buttons */}
+                            <button
+                                onClick={handleVerify}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                            >
+                                Verify And Accept Payment
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setScannedData(null); // Clear scanned data
+                                    closeScanner(); // Close scanner
+                                }}
+                                className="px-8 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
