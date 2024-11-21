@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { db } from '../firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore'; // Added updateDoc
 import QRCode from 'qrcode';
 
 const PaymentConfirmationPage = () => {
@@ -14,16 +14,29 @@ const PaymentConfirmationPage = () => {
     const [qrCodeData, setQrCodeData] = useState(null);
 
     useEffect(() => {
-
         const charityIDParam = localStorage.getItem("charityID");
-        const orderId = localStorage.getItem("paypalOrderId");
+        const orderID = localStorage.getItem("paypalOrderId");
 
         console.log("charityID", charityIDParam);
-        console.log("orderId", orderId);
+        console.log("orderID", orderID);
 
-        setOrderID(orderId);
+        setOrderID(orderID);
         setCharityID(charityIDParam);
 
+        // Update Firestore with the orderID
+        if (charityIDParam && orderID) {
+            const updateOrderIDInFirestore = async () => {
+                try {
+                    const charityDocRef = doc(db, 'charityDetails', charityIDParam);
+                    await updateDoc(charityDocRef, { orderID: orderID }); // Update Firestore with the orderID
+                    console.log("Order ID successfully updated in Firestore.");
+                } catch (error) {
+                    console.error("Error updating Firestore with orderID:", error);
+                }
+            };
+
+            updateOrderIDInFirestore();
+        }
 
         if (charityIDParam) {
             const fetchCharity = async () => {

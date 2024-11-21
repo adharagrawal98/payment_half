@@ -12,7 +12,7 @@ const VerifyPage = () => {
     const [error, setError] = useState(null); // To handle any error
 
     useEffect(() => {
-        // Extract data from location.state
+        const charityIDParam = localStorage.getItem("charityID");
         if (location.state) {
             const { scannedData: scannedData, charityData: charityData } = location.state;
 
@@ -21,10 +21,10 @@ const VerifyPage = () => {
 
             console.log("Scanned Data:", scannedData);
             console.log("Charity Data:", charityData);
+            console.log("charityID (from UID):", charityIDParam);
 
-            // Perform verification
             if (
-                scannedData.charityID === charityData.charityID &&
+                scannedData.charityID === charityIDParam &&
                 scannedData.registrationNumber === charityData.registrationNumber
             ) {
                 setVerificationResult({
@@ -38,11 +38,10 @@ const VerifyPage = () => {
                 });
             }
         } else {
-            // Handle case where state is missing
             setError("No data provided for verification.");
         }
 
-        setLoading(false); // Stop loading
+        setLoading(false);
     }, [location]);
 
     const getOrderDetails = () => {
@@ -76,7 +75,6 @@ const VerifyPage = () => {
         <div className="p-4">
             <h2 className="text-3xl font-semibold mb-6">Verification Result</h2>
 
-            {/* Verification Result */}
             {verificationResult && (
                 <div
                     className={`mt-6 p-4 rounded-lg shadow-md ${verificationResult.success
@@ -87,8 +85,6 @@ const VerifyPage = () => {
                     <p className="text-lg">{verificationResult.message}</p>
                 </div>
             )}
-
-            {/* Accept Payment Button */}
             {verificationResult?.success && (
                 <div className="mt-6 text-center">
                     <button
