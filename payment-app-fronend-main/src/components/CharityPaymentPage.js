@@ -36,7 +36,7 @@ const CharityPaymentPage = () => {
             window.paypal.Buttons({
                 createOrder: (data, actions) => {
                     return actions.order.create({
-                        intent: 'AUTHORIZE',
+                        intent: 'CAPTURE',
                         purchase_units: [{
                             amount: {
                                 value: shelter.ratePerDay,

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const VerifyPage = () => {
-    const navigate = useNavigate(); // For redirection if needed
+    const navigate = useNavigate();
     const location = useLocation();
 
     const [loading, setLoading] = useState(true);
     const [scannedData, setScannedData] = useState(null);
     const [charityData, setCharityData] = useState(null);
-    const [verificationResult, setVerificationResult] = useState(null); // To store the verification result
-    const [error, setError] = useState(null); // To handle any error
+    const [verificationResult, setVerificationResult] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const charityIDParam = localStorage.getItem("charityID");
@@ -44,8 +44,33 @@ const VerifyPage = () => {
         setLoading(false);
     }, [location]);
 
-    const getOrderDetails = () => {
-        window.alert("Capture payment functionality here.");
+    const getOrderDetails = async () => {
+        try {
+            // Get the orderId from local storage
+            const orderId = localStorage.getItem("paypalOrderId");
+            console.log("Order ID being sent to the backend:", orderId);
+
+            // Call the backend API to capture payment
+            const response = await fetch(`http://localhost:5001/api/paypal/capture-payment/${orderId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error capturing payment: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log("PayPal capture response:", result);
+
+            // Show success alert
+            window.alert("Payment captured successfully!");
+        } catch (error) {
+            console.error("Error during payment capture:", error.message);
+            window.alert("Failed to capture payment. Please try again.");
+        }
     };
 
     if (loading) {
@@ -91,7 +116,7 @@ const VerifyPage = () => {
                         onClick={getOrderDetails}
                         className="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-200"
                     >
-                        Verify And Accept Payment
+                        Accept Payment
                     </button>
                 </div>
             )}
