@@ -20,18 +20,14 @@ const PayPalButton = ({ amount, charityId }) => {
             const response = await axios.post(
                 "http://localhost:5001/api/paypal/create-order",
                 {
-                    amount,       // Amount to pay
-                    charityId,    // Charity reference ID
-                    "currency": "USD"
+                    amount,
+                    charityId,
+                    "currency": "GBP"
                 }
             );
 
             const { orderId, approvalLink } = response.data;
-
-            // Store the orderId in local storage (optional)
             localStorage.setItem("paypalOrderId", orderId);
-
-            // Redirect user to PayPal to approve the payment
             window.location.href = approvalLink;
 
         } catch (err) {
@@ -50,6 +46,7 @@ const PayPalButton = ({ amount, charityId }) => {
                 disabled={loading}
                 style={{
                     padding: "10px 20px",
+                    width: "700px",
                     backgroundColor: "#0070ba",
                     color: "#fff",
                     border: "none",
@@ -57,7 +54,7 @@ const PayPalButton = ({ amount, charityId }) => {
                     cursor: "pointer",
                 }}
             >
-                {loading ? "Processing..." : `Pay $${amount} with PayPal`}
+                {loading ? "Processing..." : `Pay £${amount} with PayPal`}
             </button>
         </div>
     );

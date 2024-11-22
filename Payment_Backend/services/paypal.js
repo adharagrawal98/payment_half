@@ -5,12 +5,16 @@ const environment = new paypal.core.SandboxEnvironment(
     clientId = process.env.PAYPAL_CLIENT_ID || 'AYs2e7dECSrKaXDDZxN9lsY6V8S_u4BO0y1zxTa3TF5LZNm6yzesYBwLxmP43gVh38nyjUIoUp87hEVT',
     clientSecret = process.env.PAYPAL_SECRET || 'EE6KDKqT11ewGaHrExhTnGPcz9J1GEkc1Ocs9BCEY7mhyu-P7xsmQqiXAvmiNdkmYmNQi055FOuDweM_'
 );
+
+
 // PAYPAL_CLIENT_ID = AS0mIYrjAJnBjcF8Qx8xvjLGmjy4QOliUiJn_iNIiX2T5Sb7I6Yz3RSUUQ392QU-6rdY2KOL4TEOD_dD
 // PAYPAL_SECRET = EL6BrTwTrmgT2tZ-0ksLsfUBFeXikbYkr2V0Nvj_hSER93XuWjXFsxEEhrr7mxXmB2cnN8zqCLIBH5z4
+//  Cay
+// PAYPAL_CLIENT_ID = AS5b882r4vsM-Hfg0WnZ_8fuvsbDax_qTvUPCQF7X6Rcbuh8VkWN00PyWqfajo-QX0p-kXcJKexBMrlx
+// PAYPAL_SECRET = EHdyXjlfCnikEQTdKZz15WxcPPI6k7q_nuPaZLtIt0tFyob7TcGgeCAaCNFkVwnxITcaDmHYv9KQtf6B
 console.log("env", environment)
 const client = new paypal.core.PayPalHttpClient(environment);
 
-// Create an order
 exports.createOrder = async (amount, currency = 'USD', referenceId = null) => {
     try {
         // Build the order request
@@ -29,15 +33,13 @@ exports.createOrder = async (amount, currency = 'USD', referenceId = null) => {
             ],
             application_context: {
                 user_action: 'PAY_NOW',
-                return_url: 'http://localhost:3000/payment-success', // Replace with your return URL
-                cancel_url: 'http://localhost:3000', // Replace with your cancel URL
+                return_url: 'http://localhost:3000/payment-success',
+                cancel_url: 'http://localhost:3000',
             },
         });
 
-        // Execute the order creation request
         const response = await client.execute(request);
 
-        // Extract the approval link for redirecting the user
         const approvalLink = response.result.links.find(link => link.rel === 'approve');
         if (!approvalLink) {
             throw new Error('No approval link found in PayPal response');
@@ -53,7 +55,6 @@ exports.createOrder = async (amount, currency = 'USD', referenceId = null) => {
     }
 };
 
-// Capture payment (if needed)
 exports.capturePayment = async (orderId) => {
     try {
         const request = new paypal.orders.OrdersCaptureRequest(orderId);
@@ -68,7 +69,6 @@ exports.capturePayment = async (orderId) => {
     }
 };
 
-// Authorize payment (if needed)
 exports.authorizePayment = async (orderId) => {
     try {
         const request = new paypal.orders.OrdersAuthorizeRequest(orderId);

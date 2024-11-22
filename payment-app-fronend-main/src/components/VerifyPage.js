@@ -72,8 +72,8 @@ const VerifyPage = () => {
             // Redirect to success page with donation details
             navigate("/success-scan", {
                 state: {
-                    charityName: charityData?.name,
-                    amount: result.amount,
+                    charityName: charityData.charityName,
+                    amount: charityData.ratePerDay,
                 },
             });
         } catch (error) {

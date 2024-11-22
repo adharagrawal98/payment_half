@@ -31,46 +31,46 @@ const CharityPaymentPage = () => {
         fetchShelter();
     }, [id]);
 
-    useEffect(() => {
-        if (showPayPal && window.paypal) {
-            window.paypal.Buttons({
-                createOrder: (data, actions) => {
-                    return actions.order.create({
-                        intent: 'CAPTURE',
-                        purchase_units: [{
-                            amount: {
-                                value: shelter.ratePerDay,
-                            },
-                        }],
-                    });
-                },
-                onApprove: async (data, actions) => {
-                    const orderID = data.orderID;
-                    const authorization = await actions.order.authorize();
-                    const authorizationID = authorization.purchase_units[0].payments.authorizations[0].id;
+    // useEffect(() => {
+    //     if (showPayPal && window.paypal) {
+    //         window.paypal.Buttons({
+    //             createOrder: (data, actions) => {
+    //                 return actions.order.create({
+    //                     intent: 'CAPTURE',
+    //                     purchase_units: [{
+    //                         amount: {
+    //                             value: shelter.ratePerDay,
+    //                         },
+    //                     }],
+    //                 });
+    //             },
+    //             onApprove: async (data, actions) => {
+    //                 const orderID = data.orderID;
+    //                 const authorization = await actions.order.authorize();
+    //                 const authorizationID = authorization.purchase_units[0].payments.authorizations[0].id;
 
-                    console.log("Order ID:", orderID);  // Log the orderID
-                    console.log("Authorization ID:", authorizationID);  // Log the authorizationID
+    //                 console.log("Order ID:", orderID);  // Log the orderID
+    //                 console.log("Authorization ID:", authorizationID);  // Log the authorizationID
 
-                    // Store orderID and authorizationID in Firestore
-                    await updateDoc(doc(db, "charityDetails", id), {
-                        orderID: orderID,
-                        authorizationID: authorizationID,
-                        paymentStatus: "authorized",
-                    });
+    //                 // Store orderID and authorizationID in Firestore
+    //                 await updateDoc(doc(db, "charityDetails", id), {
+    //                     orderID: orderID,
+    //                     authorizationID: authorizationID,
+    //                     paymentStatus: "authorized",
+    //                 });
 
-                    // Set the authorizationID in state
-                    setAuthorizationID(authorizationID);
+    //                 // Set the authorizationID in state
+    //                 setAuthorizationID(authorizationID);
 
-                    // Redirect to payment confirmation page with authorizationID as query parameter
-                    navigate(`/payment-confirmation?charityID=${id}&authorizationID=${authorizationID}&orderID=${orderID}`);
-                },
-                onError: (err) => {
-                    console.error("Error with PayPal payment:", err);
-                },
-            }).render("#paypal-button-container");
-        }
-    }, [showPayPal, shelter, navigate]);
+    //                 // Redirect to payment confirmation page with authorizationID as query parameter
+    //                 navigate(`/payment-confirmation?charityID=${id}&authorizationID=${authorizationID}&orderID=${orderID}`);
+    //             },
+    //             onError: (err) => {
+    //                 console.error("Error with PayPal payment:", err);
+    //             },
+    //         }).render("#paypal-button-container");
+    //     }
+    // }, [showPayPal, shelter, navigate]);
 
     if (!shelter) {
         return (
