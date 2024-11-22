@@ -15,6 +15,7 @@ import CharityPaymentPage from './components/CharityPaymentPage'
 import PaymentConfirmationPage from './components/PaymentConfirmationPage';
 import VerifyPage from './components/VerifyPage';
 import PaymentSuccess from './components/PaymentSuccess';
+import SuccessScan from './components/SuccessScan';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -107,6 +108,7 @@ const App = () => {
         <Route path="/shelter/:id" element={<CharityPaymentPage />} />
         <Route path="/payment-confirmation" element={<PaymentConfirmationPage />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="success-scan" element={<SuccessScan />} />
       </Routes>
     </div>
   );

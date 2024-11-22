@@ -12,45 +12,49 @@ const VerifyPage = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const charityIDParam = localStorage.getItem("charityID");
-        if (location.state) {
-            const { scannedData: scannedData, charityData: charityData } = location.state;
+        const verifyData = async () => {
+            setLoading(true); // Start loading
+            const charityIDParam = localStorage.getItem("charityID");
 
-            setScannedData(scannedData);
-            setCharityData(charityData);
+            if (location.state) {
+                const { scannedData: scannedData, charityData: charityData } = location.state;
 
-            console.log("Scanned Data:", scannedData);
-            console.log("Charity Data:", charityData);
-            console.log("charityID (from UID):", charityIDParam);
+                setScannedData(scannedData);
+                setCharityData(charityData);
 
-            if (
-                scannedData.charityID === charityIDParam &&
-                scannedData.registrationNumber === charityData.registrationNumber
-            ) {
-                setVerificationResult({
-                    success: true,
-                    message: "The QR code has been successfully verified.",
-                });
+                console.log("Scanned Data:", scannedData);
+                console.log("Charity Data:", charityData);
+                console.log("charityID (from UID):", charityIDParam);
+
+                if (
+                    scannedData.charityID === charityIDParam &&
+                    scannedData.registrationNumber === charityData.registrationNumber
+                ) {
+                    setVerificationResult({
+                        success: true,
+                        message: "The QR code has been successfully verified.",
+                    });
+                } else {
+                    setVerificationResult({
+                        success: false,
+                        message: "This QR code does not belong to this charity.",
+                    });
+                }
             } else {
-                setVerificationResult({
-                    success: false,
-                    message: "This QR code does not belong to this charity.",
-                });
+                setError("No data provided for verification.");
             }
-        } else {
-            setError("No data provided for verification.");
-        }
 
-        setLoading(false);
+            setLoading(false); // Stop loading
+        };
+
+        verifyData();
     }, [location]);
 
     const getOrderDetails = async () => {
         try {
-            // Get the orderId from local storage
             const orderId = localStorage.getItem("paypalOrderId");
             console.log("Order ID being sent to the backend:", orderId);
 
-            // Call the backend API to capture payment
             const response = await fetch(`http://localhost:5001/api/paypal/capture-payment/${orderId}`, {
                 method: "POST",
                 headers: {
@@ -65,8 +69,13 @@ const VerifyPage = () => {
             const result = await response.json();
             console.log("PayPal capture response:", result);
 
-            // Show success alert
-            window.alert("Payment captured successfully!");
+            // Redirect to success page with donation details
+            navigate("/success-scan", {
+                state: {
+                    charityName: charityData?.name,
+                    amount: result.amount,
+                },
+            });
         } catch (error) {
             console.error("Error during payment capture:", error.message);
             window.alert("Failed to capture payment. Please try again.");
@@ -74,7 +83,7 @@ const VerifyPage = () => {
     };
 
     if (loading) {
-        return <div>Loading data...</div>;
+        return <div>Verifying data...</div>;
     }
 
     if (error) {
