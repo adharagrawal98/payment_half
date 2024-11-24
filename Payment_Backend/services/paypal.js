@@ -15,16 +15,15 @@ const environment = new paypal.core.SandboxEnvironment(
 console.log("env", environment)
 const client = new paypal.core.PayPalHttpClient(environment);
 
-exports.createOrder = async (amount, currency = 'USD', referenceId = null) => {
+exports.createOrder = async (amount, currency = 'GBP', referenceId = null) => {
     try {
-        // Build the order request
         const request = new paypal.orders.OrdersCreateRequest();
         request.prefer('return=representation');
         request.requestBody({
             intent: 'CAPTURE',
             purchase_units: [
                 {
-                    reference_id: referenceId || 'default-reference-id', // Optional
+                    reference_id: referenceId || 'default-reference-id',
                     amount: {
                         currency_code: currency,
                         value: amount,
@@ -37,9 +36,7 @@ exports.createOrder = async (amount, currency = 'USD', referenceId = null) => {
                 cancel_url: 'http://localhost:3000',
             },
         });
-
         const response = await client.execute(request);
-
         const approvalLink = response.result.links.find(link => link.rel === 'approve');
         if (!approvalLink) {
             throw new Error('No approval link found in PayPal response');
@@ -59,8 +56,6 @@ exports.capturePayment = async (orderId) => {
     try {
         const request = new paypal.orders.OrdersCaptureRequest(orderId);
         request.requestBody({});
-
-        // Execute the capture request
         const response = await client.execute(request);
         return response.result;
     } catch (error) {

@@ -9,8 +9,8 @@ const ShelterDashboard = ({ user }) => {
     const [charityData, setcharityData] = useState(null);
     const [tempData, setTempData] = useState({});
     const [isEditBedInfoOpen, setIsEditBedInfoOpen] = useState(false);
-    const [scannedData, setScannedData] = useState(null); // For scanned QR data
-    const [isScannerVisible, setIsScannerVisible] = useState(false); // Toggle QR scanner modal visibility
+    const [scannedData, setScannedData] = useState(null);
+    const [isScannerVisible, setIsScannerVisible] = useState(false);
     const db = getFirestore();
     const navigate = useNavigate(); // Initialize navigate
 
@@ -42,9 +42,9 @@ const ShelterDashboard = ({ user }) => {
     const handleScan = (data) => {
         if (data) {
             try {
-                const parsedData = JSON.parse(data); // Parse the scanned data
-                setScannedData(parsedData); // Store parsed data in state
-                setIsScannerVisible(false); // Close scanner modal
+                const parsedData = JSON.parse(data);
+                setScannedData(parsedData);
+                setIsScannerVisible(false);
             } catch (error) {
                 console.error("Invalid QR data format:", error);
             }
@@ -54,7 +54,6 @@ const ShelterDashboard = ({ user }) => {
     const handleError = (error) => {
         console.error("QR scanner error:", error);
     };
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setTempData((prevData) => ({
@@ -80,12 +79,12 @@ const ShelterDashboard = ({ user }) => {
     if (!charityData) return <p>Loading charity details...</p>;
 
     const toggleScanner = () => {
-        setIsScannerVisible(true); // Always open scanner
+        setIsScannerVisible(true);
     };
 
     const closeScanner = () => {
-        setIsScannerVisible(false); // Close scanner
-        setScannedData(null); // Clear scanned data when closing
+        setIsScannerVisible(false);
+        setScannedData(null);
     };
 
     // Navigate to VerifyPage with the scanned data
@@ -193,10 +192,7 @@ const ShelterDashboard = ({ user }) => {
                                 Verify And Accept Payment
                             </button>
                             <button
-                                onClick={() => {
-                                    setScannedData(null); // Clear scanned data
-                                    closeScanner(); // Close scanner
-                                }}
+                                onClick={closeScanner}
                                 className="px-8 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
                             >
                                 Close

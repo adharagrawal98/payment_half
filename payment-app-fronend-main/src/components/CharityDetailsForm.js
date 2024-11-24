@@ -144,11 +144,22 @@ const CharityDetailsForm = ({ charityData, handleInputChange }) => {
             </label>
 
             <label className="block mb-4">
-                Bank Account Details:
+                PayPal Client ID:
                 <input
                     type="text"
                     name="bankAccountDetails"
-                    value={charityData.bankAccountDetails}
+                    value={charityData.paypalClientId}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                />
+            </label>
+            <label className="block mb-4">
+                PayPal Client SECRET:
+                <input
+                    type="text"
+                    name="bankAccountDetails"
+                    value={charityData.paypalSecret}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded"
                     required
