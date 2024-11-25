@@ -23,6 +23,12 @@ const PayPalButton = ({ amount, charityId }) => {
                     amount,
                     charityId,
                     "currency": "GBP"
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "User-Id" : localStorage.getItem("userId"),
+                    },
                 }
             );
 

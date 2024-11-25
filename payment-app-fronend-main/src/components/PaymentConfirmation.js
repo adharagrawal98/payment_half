@@ -15,7 +15,13 @@ const PaymentConfirmation = () => {
                 // Call the backend API to authorize the payment
                 const response = await axios.post(
                     `http://localhost:5001/api/paypal/authorize-payment/:orderId`,
-                    { orderId }
+                    { orderId },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "User-Id" : localStorage.getItem("userId"),
+                        },
+                    }
                 );
 
                 const { authorizationId, status: paymentStatus } = response.data;

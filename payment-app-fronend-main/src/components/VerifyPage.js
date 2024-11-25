@@ -59,6 +59,7 @@ const VerifyPage = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "User-Id" : localStorage.getItem("userId"),
                 },
             });
 

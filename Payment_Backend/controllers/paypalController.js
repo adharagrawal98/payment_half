@@ -1,7 +1,14 @@
-const paypalService = require('../services/paypal')
+import paypalService  from '../services/paypal';
+import { getPaypalSecretsFromDB } from '../services/database';
 
 exports.createOrder = async (req, res) => {
     const { amount, currency } = req.body;
+    const userId = req.headers['user-id']
+
+    const {clientId, clientSecret} = await getPaypalSecretsFromDB(userId);
+    initPaypalService({clientId, clientSecret});
+
+    console.log('Paypal service initialized with client id:', clientId);
 
     if (!amount || !currency) {
         return res.status(400).json({ error: 'Amount and currency are required.' });
@@ -20,6 +27,14 @@ exports.createOrder = async (req, res) => {
 exports.capturePayment = async (req, res) => {
     try {
         const { orderId } = req.params
+        const userId = req.headers['user-id']
+
+        const {clientId, clientSecret} = await getPaypalSecretsFromDB(userId);
+        initPaypalService({clientId, clientSecret});
+        
+        console.log('Paypal service initialized with client id:', clientId);
+
+
         const paymentData = await paypalService.capturePayment(orderId)
         res.status(200).json(paymentData)
     } catch (error) {
@@ -31,6 +46,14 @@ exports.capturePayment = async (req, res) => {
 exports.authorizePayment = async (req, res) => {
     try {
         const { orderId } = req.params
+        const userId = req.headers['user-id']
+        
+        const {clientId, clientSecret} = await getPaypalSecretsFromDB(userId);
+        initPaypalService({clientId, clientSecret});
+        
+        console.log('Paypal service initialized with client id:', clientId);
+
+
         const pamentData = await paypalService.authorizePayment(orderId)
         res.status(200).json(pamentData)
     } catch (error) {

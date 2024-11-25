@@ -86,7 +86,7 @@ const DonorMap = () => {
         if (window.google) {
             setGoogleLoaded(true);  // Mark Google API as loaded
         }
-    }, []);
+    }, [shelters]);
 
     return (
         <div className="flex flex-col items-center p-6">

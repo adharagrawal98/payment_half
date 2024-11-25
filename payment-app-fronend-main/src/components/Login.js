@@ -35,6 +35,7 @@ const Login = ({ setUser, setUserRole }) => { // Accept props
 
                 // If roles match, proceed to set user and redirect based on the role
                 setUser(user); // Set user in App state
+                localStorage.setItem('userId', user.uid); // Store user ID in local storage
                 setUserRole(existingRole); // Update user role
                 if (existingRole === "Donor") {
                     navigate('/home'); // Redirect to donor home page
